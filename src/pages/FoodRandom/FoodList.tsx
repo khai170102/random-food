@@ -52,18 +52,33 @@ export const FoodList = ({ setListFood }: { setListFood: any }) => {
         dataSource={foodContext.listFood}
         renderItem={(item) => (
           <List.Item
-            actions={[
-              <EditFilled
-                onClick={() => handleEdit(item)}
-                style={{ fontSize: 16 }}
-              />,
-              <DeleteFilled
-                onClick={() => handleDelete(item)}
-                style={{ fontSize: 16 }}
-              />,
-            ]}
+            actions={
+              !foodContext.isSelectingFood
+                ? [
+                    <EditFilled
+                      onClick={() => handleEdit(item)}
+                      style={{ fontSize: 16 }}
+                    />,
+                    <DeleteFilled
+                      onClick={() => handleDelete(item)}
+                      style={{ fontSize: 16 }}
+                    />,
+                  ]
+                : []
+            }
           >
-            <List.Item.Meta title={<strong>{item}</strong>} />
+            <List.Item.Meta
+              title={
+                <strong
+                  style={{
+                    color:
+                      foodContext.selectedFood === item ? "green" : "black",
+                  }}
+                >
+                  {item}
+                </strong>
+              }
+            />
           </List.Item>
         )}
       />
