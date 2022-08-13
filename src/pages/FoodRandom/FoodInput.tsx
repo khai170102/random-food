@@ -5,6 +5,7 @@ import { FoodContext } from "../../context/food";
 export const FoodInput = ({ setListFood }: { setListFood: any }) => {
   const [newFood, setNewFood] = useState<string>();
   const foodContext = useContext(FoodContext);
+
   const handleSubmit = () => {
     if (!newFood || newFood.length === 0) {
       return;
@@ -19,6 +20,7 @@ export const FoodInput = ({ setListFood }: { setListFood: any }) => {
       return;
     }
 
+    setNewFood("");
     setListFood([...foodContext.listFood, newFood]);
   };
 
@@ -30,10 +32,11 @@ export const FoodInput = ({ setListFood }: { setListFood: any }) => {
     <div className="flex md:flex-row md:space-x-5 space-x-0 flex-col">
       <Input
         placeholder="Name of the new food"
+        value={newFood}
         onChange={(value) => setNewFood(value.currentTarget.value)}
       />
       <div className="flex flex-row space-x-3 mt-5 md:mt-0">
-        <Button type="primary" onClick={handleSubmit}>
+        <Button type="primary" onClick={handleSubmit} disabled={!!!newFood}>
           Add New Food
         </Button>
         <Button type="primary" danger onClick={handleDelete}>
