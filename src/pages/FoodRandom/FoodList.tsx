@@ -1,37 +1,39 @@
-import { Button, Card, Input, List, Spin } from "antd";
-import { IconMap } from "antd/lib/result";
+import { Input, List, Modal } from "antd";
 import { useContext, useState } from "react";
 import { FoodContext } from "../../context/food";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 
 export const FoodList = ({ setListFood }: { setListFood: any }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<string>()
+  const [newFoodName, setNewFoodName] = useState<string>()
+
   const foodContext = useContext(FoodContext);
-  const [needUpdated, setNeedUpdate] = useState<string>();
 
-  const [updatedFood, setUpdatedFood] = useState("");
-  const [displayEdit, setDisplayEdit] = useState(true);
-
-  console.log(foodContext);
   const handleDelete = (item: string) => {
-    setDisplayEdit(true);
     let newData = foodContext.listFood.filter((food) => food != item);
 
     setListFood(newData);
   };
+
   const handleEdit = (item: string) => {
-    setDisplayEdit(false);
-    setNeedUpdate(item);
+    setSelectedItem(item)
+    setNewFoodName(item)
+    setIsModalVisible(true)
   };
-  const handleSubmit = () => {
-    setDisplayEdit(true);
-    let newEdit = foodContext.listFood.map((food) => {
-      if (food === needUpdated) {
-        food = updatedFood;
+
+  const handleSave = () => {
+    setIsModalVisible(false);
+
+    const updateListFood = foodContext.listFood.map((food) => {
+      if (food === selectedItem) {
+        return newFoodName
       }
-      return food;
-    });
-    setListFood(newEdit);
+    })
+
+    setListFood(updateListFood)
   };
+
 
   return (
     <div>
@@ -51,19 +53,14 @@ export const FoodList = ({ setListFood }: { setListFood: any }) => {
               />,
             ]}
           >
-            <List.Item.Meta title={<a>{item}</a>} />
+            <List.Item.Meta title={<strong>{item}</strong>} />
           </List.Item>
         )}
       />
-      <div className={`${displayEdit ? "hidden" : "block"}`}>
-        <Input
-          placeholder="Name of the new food"
-          onChange={(value) => setUpdatedFood(value.currentTarget.value)}
-        />
-        <Button type="primary" onClick={handleSubmit}>
-          Submit
-        </Button>
-      </div>
+
+      <Modal title="" visible={isModalVisible} onOk={handleSave} cancelText="" okText="Save" onCancel={() => setIsModalVisible(false)} closable={false} okButtonProps={{ disabled: !(newFoodName && newFoodName.length > 0) }}>
+        <Input placeholder="Input an Update Food Name" value={newFoodName} onChange={(event) => setNewFoodName(event.currentTarget.value)} />
+      </Modal>
     </div>
   );
 };
