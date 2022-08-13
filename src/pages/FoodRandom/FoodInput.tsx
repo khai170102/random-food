@@ -37,8 +37,33 @@ export const FoodInput = ({
     setListFood([]);
   };
 
-  const randomFood = () => {
+  const randomFood = async () => {
     setIsSelectingFood(true);
+
+    let randomDuration = 40;
+    let velocity = 0.15;
+
+    while (randomDuration !== 0) {
+      randomDuration -= 1;
+      velocity = velocity * 2;
+
+      const randomFood = getRandomFood();
+      setSelectedFood(randomFood);
+
+      if (randomDuration !== 0) {
+        await new Promise((r) => setTimeout(r, 1000 / (1 + velocity)));
+      } else {
+        message.success(`Your food today is ${randomFood}`);
+      }
+    }
+
+    setIsSelectingFood(false);
+  };
+
+  const getRandomFood = () => {
+    const items = foodContext.listFood;
+
+    return items[Math.floor(Math.random() * items.length)];
   };
 
   return (
